@@ -8,10 +8,11 @@ async function throwIfResNotOk(res: Response) {
 }
 
 export async function apiRequest(
-  method: string,
-  url: string,
-  data?: unknown | undefined,
+  method: string, url: string, data?: unknown | undefined,
 ): Promise<Response> {
+  const baseUrl = window.location.origin;
+  url = `${baseUrl}/${url}`;
+
   const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
@@ -29,7 +30,8 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    const baseUrl = window.location.origin;
+    const res = await fetch(`${baseUrl}/${queryKey[0]}` as string, {
       credentials: "include",
     });
 
